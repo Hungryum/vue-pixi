@@ -34,17 +34,19 @@ const alpha = computed(() => {
   return 3.5 - scale.value
 })
 
+const zIndex = computed(() => {
+  return scale.value > 2.5 ? 1 : 0
+})
+
 onTick((delta) => {
   scale.value += (scale.value / 500) * delta;
 })
 
 function positionRelativeToPlayer(playerAxis: number, cloudAxis: number) {
-    return (cloudAxis - playerAxis) / (4 - scale.value);
+    return cloudAxis + (cloudAxis - playerAxis) * (scale.value * scale.value / 8);
 }
 </script>
 
 <template>
-  <container :x="positionRelativeToPlayer(playerPosX, posX)" :y="positionRelativeToPlayer(playerPosY, posY)">
-    <sprite :x="posX" :y="posY" :anchor="anchor" :texture="texture" :scale="scale" :alpha="alpha" />
-  </container>
+    <sprite :x="positionRelativeToPlayer(playerPosX, posX)" :y="positionRelativeToPlayer(playerPosY, posY)" :anchor="anchor" :texture="texture" :scale="scale" :alpha="alpha" :z-index="zIndex" />
 </template>

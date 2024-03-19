@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref, useModel } from 'vue';
+import { computed, ref, toRef, toRefs, useModel } from 'vue';
 import { useMagicKeys, onKeyDown } from '@vueuse/core'
 import { onTick } from 'vue3-pixi'
 import forward from '../assets/sprites/plane/plane-forward.png'
@@ -13,13 +13,13 @@ import downLeft from '../assets/sprites/plane/plane-down-left.png'
 import downRight from '../assets/sprites/plane/plane-down-right.png'
 import { SCALE_MODES, Texture } from 'pixi.js';
 
-const showSprite = defineModel<boolean>('showSprite')
+const fuel = defineModel<number>('fuel', {required: true})
 const posX = defineModel<number>('playerPosX', {required: true})
 const posY = defineModel<number>('playerPosY', {required: true})
 
 const velocityX = ref(0)
 const velocityY = ref(0)
-const airFriction = 0.05;
+const airFriction: number = 0.05;
 
 const resolves = {
   forward: Texture.from(forward, { scaleMode: SCALE_MODES.NEAREST }),
@@ -44,33 +44,40 @@ onKeyDown(' ', () => {
   console.log('space')
 })
 
-onTick(() => {
-  if (arrowright.value) {
-    if(velocityX.value < 2) {
-      velocityX.value += 0.1
-    }
-  }
-  if (arrowleft.value) {
-    if(velocityX.value > -2) {
-      velocityX.value -= 0.1
-    }
-  }
-  if (arrowup.value) {
-    if(velocityY.value < 2) {
-      velocityY.value += 0.1
-    }
-  }
-  if (arrowdown.value) {
-    if(velocityY.value > -2) {
-      velocityY.value -= 0.1
-    }
-  }
+onTick((delta) => {
+  checkKeyPressed(delta)
 
   posX.value += velocityX.value;
   posY.value -= velocityY.value;
   velocityX.value *= (1 - airFriction);
   velocityY.value *= (1 - airFriction);
 })
+
+function checkKeyPressed(delta: number) {
+  if (arrowright.value) {
+    if(velocityX.value < 2) {
+      velocityX.value += 0.1 * delta
+    }
+  }
+
+  if (arrowleft.value) {
+    if(velocityX.value > -2) {
+      velocityX.value -= 0.1 * delta
+    }
+  }
+
+  if (arrowup.value && fuel.value > 0) {
+    if(velocityY.value < 2) {
+      velocityY.value += 0.1 * delta
+    }
+  }
+
+  if (arrowdown.value || fuel.value <= 0) {
+    if(velocityY.value > -2) {
+      velocityY.value -= 0.1 * delta
+    }
+  }
+}
 
 const texture = computed(() => {
   if(velocityX.value > 1) {
@@ -107,5 +114,5 @@ const texture = computed(() => {
 </script>
 
 <template>
-    <sprite v-if="showSprite" :x="posX" :y="posY" :anchor="0.5" :texture="texture" :scale="1" />
+    <sprite :x="posX" :y="posY" :anchor="0.5" :texture="texture" :scale="1" :z-index="0" />
 </template>
