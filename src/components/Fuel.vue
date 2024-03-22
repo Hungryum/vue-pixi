@@ -14,7 +14,6 @@ const posX = useModel(props, 'x')
 const posY = useModel(props, 'y')
 const playerPosX = defineModel<number>('playerPosX', {required: true})
 const playerPosY = defineModel<number>('playerPosY', {required: true})
-const fuel = defineModel<number>('fuel', {required: true})
 const scale = ref(0.1)
 const anchor: [number, number] = posX.value < playerPosX.value ? [1, 0] : [0, 0]
 const texture = Texture.from(fuelSprite, { scaleMode: SCALE_MODES.NEAREST })

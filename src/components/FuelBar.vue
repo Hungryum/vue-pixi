@@ -29,7 +29,7 @@ const fillBar = computed(() => {
             :y="30"
             @render="graphics => {
                 graphics.clear()
-                graphics.beginFill(0xDE3249)
+                graphics.beginFill(0x6AA84F)
                 graphics.drawRoundedRect(0, 0, fillBar, 20, 20)
                 graphics.endFill()
             }"

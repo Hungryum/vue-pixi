@@ -4,16 +4,16 @@ import Game from './components/Game.vue';
 import AlphaTransition from './components/AlphaTransition.vue';
 import Background from './layout/Background.vue';
 import { useScreen } from 'vue3-pixi';
+import Facts from './components/Facts.vue'
 
-const screen = useScreen()
 </script>
 
 <template>
   <Main>
     <Background />
+    <Game />
     <!-- game screen switching with alpha transition -->
-    <AlphaTransition>
-      <Game />
-    </AlphaTransition>
+    <!-- <AlphaTransition> -->
+    <!-- </AlphaTransition> -->
   </Main>
 </template>
